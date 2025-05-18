@@ -7,7 +7,9 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { clearCookies } from '../utils';
 
 const menu = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
@@ -22,6 +24,12 @@ const menu = [
 export default function Sidebar({ open }) {
     const navigate = useNavigate()
     const location = useLocation();
+
+    const handleLogout = () => {
+        clearCookies();
+        navigate('/login');
+    }
+
     return (
         <Box
             sx={{
@@ -29,8 +37,8 @@ export default function Sidebar({ open }) {
                 width: open ? 220 : 0,
                 // transition: '0.3s',
                 overflow: 'hidden',
-                bgcolor: 'primary.main',
-                color: 'white',
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.primary.main,
+                color: (theme) => theme.palette.mode === 'dark' ? theme.palette.text.primary : theme.palette.common.white,
                 height: '100vh',
                 position: 'fixed',
                 zIndex: 1200,
@@ -47,9 +55,14 @@ export default function Sidebar({ open }) {
                         key={item.text}
                         onClick={() => navigate(item.path)}
                         sx={{
-                            mb: 1, borderRadius: 2, bgcolor: item.path === location.pathname ? 'primary.dark' : 'inherit', cursor: 'pointer',
+                            mb: 1,
+                            borderRadius: 2,
+                            bgcolor: item.path === location.pathname ? 'primary.dark' : 'inherit',
+                            color: item.path === location.pathname ? 'white' : 'inherit',
+                            cursor: 'pointer',
                             '&:hover': {
-                                bgcolor: 'primary.dark'
+                                bgcolor: 'primary.dark',
+                                color: 'white',
                             }
                         }}
                     >
@@ -59,6 +72,27 @@ export default function Sidebar({ open }) {
 
                     </ListItem>
                 ))}
+            </List>
+            <Divider sx={{ my: 2, bgcolor: (theme) => theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300' }} />
+            <List>
+                <ListItem
+                    button
+                    sx={{
+                        borderRadius: 2,
+                        color: 'error.white',
+                        cursor: 'pointer',
+                        '&:hover': {
+                            bgcolor: 'error.light',
+                            color: 'white'
+                        }
+                    }}
+                    onClick={handleLogout}
+                >
+                    <ListItemIcon sx={{ color: 'white' }}>
+                        <LogoutIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItem>
             </List>
         </Box>
     );

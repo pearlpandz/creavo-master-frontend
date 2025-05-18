@@ -1,7 +1,7 @@
 import { Paper, Tabs, Tab } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { Distributor } from './Distributor';
-import { User } from './User';
+import { Reseller } from './Reseller';
 
 export default function NetworkManagement() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,7 +18,7 @@ export default function NetworkManagement() {
                 <Tab label="Resellers" />
             </Tabs>
             {tab === 0 && <Distributor />}
-            {tab === 1 && <User />}
+            {tab === 1 && <Reseller />}
         </Paper>
     );
 }

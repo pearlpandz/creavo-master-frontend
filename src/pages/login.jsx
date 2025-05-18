@@ -12,6 +12,15 @@ const Login = () => {
 
     const handleTogglePassword = () => setShowPassword((show) => !show)
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // Handle login logic here
+        console.log('Mobile:', mobile)
+        console.log('Password:', password)
+        // Example: navigate to home page after successful login
+        navigate('/')
+    }
+
     return (
         <Grid container sx={{ width: '100vw', }}>
             {/* Left Image Section */}
@@ -33,7 +42,7 @@ const Login = () => {
                         </IconButton>
                     </Box>
                     <Divider sx={{ width: '100%', mb: 2 }}>or</Divider>
-                    <Box component="form" sx={{ width: '100%', maxWidth: 400 }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 400 }}>
                         <TextField
                             margin="normal"
                             required

@@ -9,7 +9,7 @@ const rowData = [
     { name: 'Oscar', location: 'Chennai', distributors: 2, status: 'Active' },
 ];
 
-export function User() {
+export function Reseller() {
     const [open, setOpen] = useState(false);
 
     const onClose = () => {
@@ -35,11 +35,11 @@ export function User() {
                     { field: 'status', headerName: 'Status', flex: 1 },
                 ]}
                 rows={rowData}
-                title='Distrubutor List'
+                title='Reseller List'
                 onCreate={onOpen}
-                createBtnLabel='Create Distributor'
+                createBtnLabel='Create Reseller'
             />
-            <CreateModal label='Create New Distributor' open={open} onClose={onClose} onSubmit={onSubmit} />
+            <CreateModal label='Create New Reseller' open={open} onClose={onClose} onSubmit={onSubmit} />
         </>
     )
 }
