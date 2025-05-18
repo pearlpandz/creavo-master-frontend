@@ -1,0 +1,96 @@
+import { useState } from 'react'
+import { ThemeProvider, CssBaseline } from '@mui/material'
+import { HashRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { lightTheme, darkTheme } from './theme'
+import Login from './pages/login'
+import Signup from './pages/signup'
+import ForgetPassword from './pages/forgetpassword'
+import Home from './pages/home'
+import Network from './pages/network'
+import Sidebar from './components/Sidebar'
+import TopNav from './components/TopNav'
+import { AuthContext, useAuth } from './context/auth.context'
+import License from './pages/license'
+
+function ProtectedRoute() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Outlet /> : <Navigate to='/' />
+}
+
+function ProtectedLayout({ isAuthenticated, sidebarOpen, setSidebarOpen }) {
+
+  return isAuthenticated ? (
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#f6f6fd', overflow: 'hidden', width: "-webkit-fill-available" }}>
+      <Sidebar open={sidebarOpen} />
+      <div style={{ width: sidebarOpen ? "calc(100% - 220px)" : "auto", flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', marginLeft: sidebarOpen ? 220 : 0, transition: 'margin-left 0.3s' }}>
+        <TopNav onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <Outlet />
+        </div>
+      </div>
+    </div>
+
+  ) : <Navigate to="/login" replace />
+}
+
+function BasicLayout({ toggleTheme }) {
+  return (
+    <>
+      <button onClick={toggleTheme} style={{ position: 'absolute', top: 16, right: 16, zIndex: 999 }}>Toggle Theme</button>
+      <Outlet />
+    </>
+  )
+}
+
+function App() {
+  const [darkMode, setDarkMode] = useState(false)
+
+  // Apply authentication logic
+  const [isAuthenticated, setAuthenticated] = useState(true);
+  const [userDetails, setUserDetails] = useState(null);
+
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  const toggleTheme = () => setDarkMode((prev) => !prev)
+
+  const login = () => {
+    setAuthenticated(true)
+    setUserDetails({ username: 'Black', email: "john@mail.com" })
+    localStorage.setItem('isAuthenticated', true);
+    localStorage.setItem('userDetails', JSON.stringify({ username: 'Black', email: "john@mail.com" }));
+  }
+
+  const logout = () => {
+    setAuthenticated(false)
+    setUserDetails(null)
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userDetails');
+  }
+
+  return (
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <AuthContext.Provider value={{ isAuthenticated, userDetails, login, logout }}>
+        <CssBaseline />
+        <Router>
+          <Routes>
+            <Route element={<BasicLayout toggleTheme={toggleTheme} />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forget-password" element={<ForgetPassword />} />
+            </Route>
+            <Route element={<ProtectedLayout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isAuthenticated={isAuthenticated} />}>
+              <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/networks" element={<Network />} />
+                <Route path="/licenses" element={<License />} />
+              </Route>
+            </Route>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </Router>
+      </AuthContext.Provider>
+    </ThemeProvider>
+  )
+}
+
+export default App
