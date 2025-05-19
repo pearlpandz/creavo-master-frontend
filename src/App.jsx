@@ -11,6 +11,7 @@ import Sidebar from './components/Sidebar'
 import TopNav from './components/TopNav'
 import { AuthContext, useAuth } from './context/auth.context'
 import License from './pages/license'
+import Subscription from './pages/subscription'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
@@ -93,6 +94,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/networks" element={<Network />} />
                 <Route path="/licenses" element={<License />} />
+                <Route path="/subscriptions" element={<Subscription />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/login" replace />} />
