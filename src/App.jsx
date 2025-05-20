@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { HashRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { lightTheme, darkTheme } from './theme'
@@ -12,6 +12,7 @@ import TopNav from './components/TopNav'
 import { AuthContext, useAuth } from './context/auth.context'
 import License from './pages/license'
 import Subscription from './pages/subscription'
+import axios from 'axios'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
@@ -67,6 +68,17 @@ function App() {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userDetails');
   }
+
+  useEffect(() => {
+    const getCSRFToken = async () => {
+      try {
+        await axios.get('http://localhost:8000/get_csrf', { withCredentials: true })
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    }
+    getCSRFToken()
+  }, [])
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>

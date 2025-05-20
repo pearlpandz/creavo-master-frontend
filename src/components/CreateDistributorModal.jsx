@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Box, Typography, TextField, Button, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -15,16 +15,18 @@ const style = {
     p: 4,
 };
 
-export default function CreateModal({ open, onClose, onSubmit, label }) {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const formRef = React.useRef(null);
-    const [formData, setFormData] = React.useState({
+const initialFormData = {
         firstName: '',
         lastName: '',
         mobile: '',
         email: '',
         password: '',
-    });
+}
+
+export default function CreateModal({ open, onClose, onSubmit, label }) {
+    const [showPassword, setShowPassword] = React.useState(false);
+    const formRef = React.useRef(null);
+    const [formData, setFormData] = React.useState({ ...initialFormData });
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,8 +35,13 @@ export default function CreateModal({ open, onClose, onSubmit, label }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (onSubmit) onSubmit(formData);
-        onClose();
     };
+
+    useEffect(() => {
+        if (open) {
+            setFormData({ ...initialFormData });
+        }
+    }, [open])
 
     return (
         <Modal

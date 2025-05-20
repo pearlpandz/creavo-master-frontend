@@ -1,25 +1,55 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Grid, Paper, Typography, TextField, Button, IconButton, InputAdornment, Divider } from '@mui/material'
 import { Visibility, VisibilityOff, Google, Facebook, Apple } from '@mui/icons-material'
 import MasonryImageList from '../components/ImageGallery'
 import { useNavigate } from 'react-router-dom'
+import { API_URL } from '../constants/settings'
+import axios from 'axios'
+import { getCookie } from '../utils'
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
-    const [mobile, setMobile] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate();
 
     const handleTogglePassword = () => setShowPassword((show) => !show)
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         // Handle login logic here
-        console.log('Mobile:', mobile)
+        console.log('Email:', email)
         console.log('Password:', password)
-        // Example: navigate to home page after successful login
-        navigate('/')
+
+        try {
+            const url = `${API_URL}/accounts/auth/master-distributor/`;
+            const res = await axios.post(url, { email, password }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (res.status === 200) {
+                localStorage.setItem('userDetails', JSON.stringify(res.data.user))
+                navigate('/')
+            } else {
+                console.error('Login failed:', res.data)
+            }
+        } catch (error) {
+            console.error('Login error:', error)
+        }
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        const token = getCookie('access_token')
+        console.log('Token:', token)
+        if (token) {
+            navigate('/')
+        }
+    }, [navigate])
+
+
 
     return (
         <Grid container sx={{ width: '100vw', }}>
@@ -47,12 +77,12 @@ const Login = () => {
                             margin="normal"
                             required
                             fullWidth
-                            id="mobile"
-                            label="Mobile Number"
-                            name="mobile"
+                            id="email"
+                            label="Email"
+                            name="email"
                             autoComplete="tel"
-                            value={mobile}
-                            onChange={e => setMobile(e.target.value)}
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                         />
                         <TextField
                             margin="normal"
@@ -87,10 +117,10 @@ const Login = () => {
                         >
                             Login
                         </Button>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                        {/* <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                             <Typography variant="body2">Don't have an account?</Typography>
                             <Button size="small" onClick={() => navigate('/signup')}>Sign Up</Button>
-                        </Box>
+                        </Box> */}
                     </Box>
                 </Box>
             </Grid>

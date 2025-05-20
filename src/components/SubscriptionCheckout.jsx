@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper, Box, Typography, Checkbox, FormControlLabel, IconButton, Button, Divider, TextField, Grid, Card } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-
-const availablePlans = [
-    { id: 1, name: 'Gold', price: 100, discount: 10 },
-    { id: 2, name: 'Platinum', price: 200, discount: 20 },
-    { id: 3, name: 'Diamond', price: 500, discount: 50 },
-];
+import axios from 'axios';
+import { API_URL } from '../constants/settings';
 
 export default function SubscriptionCheckout() {
     const [selected, setSelected] = useState({});
+    const [data, setData] = useState([]);
+
+    const fetchData = async () => {
+        try {
+            const url = `${API_URL}/accounts/subscriptions/`;
+            const response = await axios.get(url, { withCredentials: true, });
+            const data = response.data
+            setData(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleCheck = (id) => {
         setSelected((prev) => ({ ...prev, [id]: prev[id] ? { ...prev[id], checked: !prev[id].checked } : { checked: true, qty: 1 } }));
@@ -29,18 +41,21 @@ export default function SubscriptionCheckout() {
     const summary = Object.entries(selected)
         .filter(([id, v]) => v.checked)
         .map(([id, v]) => {
-            const plan = availablePlans.find((p) => p.id === Number(id));
+            const plan = data.find((p) => p.id === Number(id));
             const price = plan.price * v.qty;
-            const discount = plan.discount * v.qty;
+            const discount = (plan.discount ?? 0) * v.qty;
             return { ...plan, qty: v.qty, price, discount, final: price - discount };
         });
+
     const total = summary.reduce((acc, s) => acc + s.final, 0);
+
+    console.log('data', data)
 
     return (
         <Paper sx={{ p: 2 }}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>Subscribe to New Plans</Typography>
             <Grid container spacing={2} sx={{ mb: 2 }}>
-                {availablePlans.map((plan) => (
+                {data.map((plan) => (
                     <Grid size={{ xs: 12 }} key={plan.id}>
                         <Card sx={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', boxShadow: 2, borderRadius: 2, p: 2 }}>
                             {/* Left: Plan Info */}
@@ -56,9 +71,10 @@ export default function SubscriptionCheckout() {
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                                         <Typography sx={{ fontWeight: 600, fontSize: 18 }}>₹{plan.price}</Typography>
-                                        <Typography sx={{ textDecoration: 'line-through', color: 'text.disabled', fontSize: 14 }}>₹{plan.price + plan.discount}</Typography>
-                                        <Typography sx={{ color: 'success.main', fontWeight: 500, fontSize: 14 }}>{Math.round((plan.discount / (plan.price + plan.discount)) * 100)}% off</Typography>
+                                        {/* <Typography sx={{ textDecoration: 'line-through', color: 'text.disabled', fontSize: 14 }}>₹{plan.price + plan.discount}</Typography> */}
+                                        {/* <Typography sx={{ color: 'success.main', fontWeight: 500, fontSize: 14 }}>{(plan.discount && plan.price) ? Math.round((plan.discount / (plan.price + plan.discount)) * 100) : 0}% off</Typography> */}
                                     </Box>
+                                    {/* {plan.price} {plan.discount > 0 ? 'true' : 'false'} */}
                                 </Box>
                             </Box>
                             {/* Right: Quantity Controls */}
@@ -89,7 +105,7 @@ export default function SubscriptionCheckout() {
             </Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, textAlign: 'right' }}>Total: ₹{total}</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant="contained" color="primary" disabled={summary.length === 0}>Checkout</Button>
+                <Button variant="contained" color="primary" disabled={summary.length === 0}>Place Order</Button>
             </Box>
         </Paper>
     );

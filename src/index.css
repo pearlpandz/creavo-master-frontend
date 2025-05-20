@@ -56,6 +56,21 @@ button:hover {
   border-color: #646cff;
 }
 
+span.active {
+  background: #26d081;
+  color: white;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+span.inactive {
+  background: #ffb422;
+  color: white;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

@@ -1,26 +1,39 @@
 import { Box, Grid, Paper } from "@mui/material";
 import DataTable from "../components/DataTable";
-
-const resellerData = [
-    { name: 'Eve', location: 'Hyderabad', distributors: 2, status: 'Active' },
-    { name: 'Mallory', location: 'Delhi', distributors: 1, status: 'Inactive' },
-    { name: 'Trent', location: 'Mumbai', distributors: 3, status: 'Active' },
-    { name: 'Oscar', location: 'Chennai', distributors: 2, status: 'Active' },
-];
+import { LICENSE_COLUMNS } from "../constants/columns";
+import { useEffect, useState } from "react";
+import { API_URL } from "../constants/settings";
+import axios from "axios";
 
 function License() {
+    const [data, setData] = useState([]);
+    const userDetails = localStorage.getItem('userDetails');
+    const userId = userDetails ? JSON.parse(userDetails).id : null;
+
+    const fetchData = async (userId) => {
+        try {
+            const url = `${API_URL}/accounts/licenses/master-distributor/${userId}/`;
+            const response = await axios.get(url, { withCredentials: true, });
+            const data = response.data
+            setData(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    useEffect(() => {
+        if (userId) {
+            fetchData(userId);
+        }
+    }, [userId]);
+
     return (
         <Box sx={{ p: 3, bgcolor: '#f6f6fd', minHeight: '100vh' }}>
             <Grid container sx={{ width: '100%' }}>
                 <Grid size={12}>
                     <DataTable
-                        columns={[
-                            { field: 'name', headerName: 'Name', flex: 1 },
-                            { field: 'location', headerName: 'Location', flex: 1 },
-                            { field: 'distributors', headerName: 'Distributors', flex: 1 },
-                            { field: 'status', headerName: 'Status', flex: 1 },
-                        ]}
-                        rows={resellerData}
+                        columns={LICENSE_COLUMNS}
+                        rows={data}
                         title='Licenses'
                     />
                 </Grid>

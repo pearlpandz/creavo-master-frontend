@@ -27,6 +27,7 @@ export default function Sidebar({ open }) {
 
     const handleLogout = () => {
         clearCookies();
+        localStorage.removeItem('userDetails');
         navigate('/login');
     }
 
