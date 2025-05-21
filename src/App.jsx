@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { HashRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { lightTheme, darkTheme } from './theme'
@@ -9,13 +9,11 @@ import Home from './pages/home'
 import Network from './pages/network'
 import Sidebar from './components/Sidebar'
 import TopNav from './components/TopNav'
-import { AuthContext, useAuth } from './context/auth.context'
+import { AuthContext } from './context/auth.context'
 import License from './pages/license'
 import Subscription from './pages/subscription'
-import axios from 'axios'
 
-function ProtectedRoute() {
-  const { isAuthenticated } = useAuth();
+function ProtectedRoute({ isAuthenticated }) {
   return isAuthenticated ? <Outlet /> : <Navigate to='/' />
 }
 
@@ -48,18 +46,18 @@ function App() {
   const [darkMode, setDarkMode] = useState(false)
 
   // Apply authentication logic
-  const [isAuthenticated, setAuthenticated] = useState(true);
-  const [userDetails, setUserDetails] = useState(null);
+  const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true' || false);
+  const [userDetails, setUserDetails] = useState(JSON.parse(localStorage.getItem('userDetails')) || null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const toggleTheme = () => setDarkMode((prev) => !prev)
 
-  const login = () => {
+  const login = (data) => {
     setAuthenticated(true)
-    setUserDetails({ username: 'Black', email: "john@mail.com" })
+    setUserDetails(data)
     localStorage.setItem('isAuthenticated', true);
-    localStorage.setItem('userDetails', JSON.stringify({ username: 'Black', email: "john@mail.com" }));
+    localStorage.setItem('userDetails', JSON.stringify(data));
   }
 
   const logout = () => {
@@ -69,16 +67,16 @@ function App() {
     localStorage.removeItem('userDetails');
   }
 
-  useEffect(() => {
-    const getCSRFToken = async () => {
-      try {
-        await axios.get('http://localhost:8000/get_csrf', { withCredentials: true })
-      } catch (error) {
-        console.error('Error fetching CSRF token:', error);
-      }
-    }
-    // getCSRFToken()
-  }, [])
+  // useEffect(() => {
+  //   const getCSRFToken = async () => {
+  //     try {
+  //       await axios.get('http://localhost:8000/get_csrf', { withCredentials: true })
+  //     } catch (error) {
+  //       console.error('Error fetching CSRF token:', error);
+  //     }
+  //   }
+  // getCSRFToken()
+  // }, [])
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>

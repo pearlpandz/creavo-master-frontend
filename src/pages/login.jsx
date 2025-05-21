@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Paper, Typography, TextField, Button, IconButton, InputAdornment, Divider } from '@mui/material'
-import { Visibility, VisibilityOff, Google, Facebook, Apple } from '@mui/icons-material'
+import { useState } from 'react'
+import { Box, Grid, Typography, TextField, Button, IconButton, InputAdornment, Divider } from '@mui/material'
+import { Visibility, VisibilityOff, Google, Facebook } from '@mui/icons-material'
 import MasonryImageList from '../components/ImageGallery'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../constants/settings'
 import axios from 'axios'
-import { getCookie } from '../utils'
+import { useAuth } from '../context/auth.context'
 
 const Login = () => {
+    const { login } = useAuth()
     const [showPassword, setShowPassword] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -30,7 +31,7 @@ const Login = () => {
                 },
             })
             if (res.status === 200) {
-                localStorage.setItem('userDetails', JSON.stringify(res.data.user))
+                login(res.data.user)
                 navigate('/')
             } else {
                 console.error('Login failed:', res.data)
@@ -39,17 +40,6 @@ const Login = () => {
             console.error('Login error:', error)
         }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        const token = getCookie('access_token')
-        console.log('Token:', token)
-        if (token) {
-            navigate('/')
-        }
-    }, [navigate])
-
-
 
     return (
         <Grid container sx={{ width: '100vw', }}>

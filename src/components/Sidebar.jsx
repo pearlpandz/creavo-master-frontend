@@ -1,14 +1,11 @@
-import React from 'react';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Divider, Typography } from '@mui/material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LanIcon from '@mui/icons-material/Lan';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import SettingsIcon from '@mui/icons-material/Settings';
-import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/auth.context';
 import { clearCookies } from '../utils';
 
 const menu = [
@@ -16,18 +13,16 @@ const menu = [
     { text: 'Networks', icon: <LanIcon />, path: '/networks' },
     { text: 'Licenses', icon: <VpnKeyIcon />, path: '/licenses' },
     { text: 'Subscriptions', icon: <SubscriptionsIcon />, path: '/subscriptions' },
-    // { text: 'Reports', icon: <BarChartIcon />, path: '/' },
-    // { text: 'Settings', icon: <SettingsIcon />, path: '/' },
-    // { text: 'Support', icon: <HeadsetMicIcon />, path: '/' },
 ];
 
 export default function Sidebar({ open }) {
     const navigate = useNavigate()
     const location = useLocation();
+    const { logout } = useAuth()
 
     const handleLogout = () => {
         clearCookies();
-        localStorage.removeItem('userDetails');
+        logout();
         navigate('/login');
     }
 
