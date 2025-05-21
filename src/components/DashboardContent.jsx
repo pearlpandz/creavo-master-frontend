@@ -57,15 +57,16 @@ export default function Home({ data }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        {data?.recent_distributors?.map((row) => (
-                                            DISTRIBUTOR_COLUMNS.map((column) => (
+                                    {data?.recent_distributors?.map((row) => (
+                                        <TableRow>
+                                            {DISTRIBUTOR_COLUMNS.map((column) => (
                                                 <TableCell key={column.field}>
                                                     <CellData column={column} row={row} />
                                                 </TableCell>
                                             ))
-                                        ))}
-                                    </TableRow>
+                                            }
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -91,16 +92,18 @@ export default function Home({ data }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        {data?.recent_users?.map((row) => (
-                                            RESELLER_COLUMNS.map((column) => (
-                                                !column?.hide &&
-                                                <TableCell key={column.field}>
-                                                    <CellData column={column} row={row} />
-                                                </TableCell>
-                                            ))
-                                        ))}
-                                    </TableRow>
+                                    {data?.recent_users?.map((row) => (
+                                        <TableRow>
+                                            {
+                                                RESELLER_COLUMNS.map((column) => (
+                                                    !column?.hide &&
+                                                    <TableCell key={column.field}>
+                                                        <CellData column={column} row={row} />
+                                                    </TableCell>
+                                                ))
+                                            }
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>

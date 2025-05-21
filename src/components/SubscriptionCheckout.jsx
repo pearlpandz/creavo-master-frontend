@@ -3,11 +3,15 @@ import { Paper, Box, Typography, Checkbox, FormControlLabel, IconButton, Button,
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import axios from 'axios';
+import { Snackbar, Alert } from '@mui/material';
 import { API_URL } from '../constants/settings';
 
 export default function SubscriptionCheckout() {
     const [selected, setSelected] = useState({});
     const [data, setData] = useState([]);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+    const userDetails = localStorage.getItem('userDetails');
+    const userId = userDetails ? JSON.parse(userDetails).id : null;
 
     const fetchData = async () => {
         try {
@@ -49,7 +53,31 @@ export default function SubscriptionCheckout() {
 
     const total = summary.reduce((acc, s) => acc + s.final, 0);
 
-    console.log('data', data)
+    const handlePlaceOrder = async () => {
+        try {
+            const payload = {
+                master_distributor_id: userId,
+                distributor_id: null,
+                subscriptions: summary.map((s) => ({
+                    subscription_id: s.id,
+                    quantity: s.qty,
+                })),
+                subtotal: total,
+                total: total,
+            }
+            const url = `${API_URL}/accounts/orders/new/`;
+            const response = await axios.post(url, payload, { withCredentials: true, });
+            if (response.status === 200) {
+                setSelected({});
+                fetchData();
+                setSnackbar({ open: true, message: 'Order placed successfully!', severity: 'success' });
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            setSnackbar({ open: true, message: 'Error placing order', severity: 'error' });
+        }
+
+    }
 
     return (
         <Paper sx={{ p: 2 }}>
@@ -105,8 +133,13 @@ export default function SubscriptionCheckout() {
             </Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, textAlign: 'right' }}>Total: ₹{total}</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant="contained" color="primary" disabled={summary.length === 0}>Place Order</Button>
+                <Button variant="contained" color="primary" disabled={summary.length === 0} onClick={handlePlaceOrder}>Place Order</Button>
             </Box>
+            <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Paper>
     );
 }

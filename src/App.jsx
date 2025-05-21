@@ -77,7 +77,7 @@ function App() {
         console.error('Error fetching CSRF token:', error);
       }
     }
-    getCSRFToken()
+    // getCSRFToken()
   }, [])
 
   return (
