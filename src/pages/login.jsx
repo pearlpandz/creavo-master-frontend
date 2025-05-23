@@ -1,16 +1,39 @@
-import React, { useState } from 'react'
-import { Box, Grid, Paper, Typography, TextField, Button, IconButton, InputAdornment, Divider } from '@mui/material'
-import { Visibility, VisibilityOff, Google, Facebook, Apple } from '@mui/icons-material'
+import { useState } from 'react'
+import { Box, Grid, Typography, TextField, Button, IconButton, InputAdornment, Divider } from '@mui/material'
+import { Visibility, VisibilityOff, Google, Facebook } from '@mui/icons-material'
 import MasonryImageList from '../components/ImageGallery'
 import { useNavigate } from 'react-router-dom'
+import axios from '../utils/axios-interceptor'
+import { useAuth } from '../context/auth.context'
 
 const Login = () => {
+    const { login } = useAuth()
     const [showPassword, setShowPassword] = useState(false)
-    const [mobile, setMobile] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate();
 
     const handleTogglePassword = () => setShowPassword((show) => !show)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // Handle login logic here
+        console.log('Email:', email)
+        console.log('Password:', password)
+
+        try {
+            const url = `/accounts/auth/master-distributor/`;
+            const res = await axios.post(url, { email, password })
+            if (res.status === 200) {
+                login(res.data.user)
+                navigate('/')
+            } else {
+                console.error('Login failed:', res.data)
+            }
+        } catch (error) {
+            console.error('Login error:', error)
+        }
+    }
 
     return (
         <Grid container sx={{ width: '100vw', }}>
@@ -33,17 +56,17 @@ const Login = () => {
                         </IconButton>
                     </Box>
                     <Divider sx={{ width: '100%', mb: 2 }}>or</Divider>
-                    <Box component="form" sx={{ width: '100%', maxWidth: 400 }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 400 }}>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="mobile"
-                            label="Mobile Number"
-                            name="mobile"
+                            id="email"
+                            label="Email"
+                            name="email"
                             autoComplete="tel"
-                            value={mobile}
-                            onChange={e => setMobile(e.target.value)}
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                         />
                         <TextField
                             margin="normal"
@@ -78,10 +101,10 @@ const Login = () => {
                         >
                             Login
                         </Button>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                        {/* <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                             <Typography variant="body2">Don't have an account?</Typography>
                             <Button size="small" onClick={() => navigate('/signup')}>Sign Up</Button>
-                        </Box>
+                        </Box> */}
                     </Box>
                 </Box>
             </Grid>

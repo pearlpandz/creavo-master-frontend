@@ -189,22 +189,23 @@ export default function DataTable({ columns, rows, title = 'Title', loading = fa
     const defaultConfig = {
         pagination: {
             paginationModel: {
-                pageSize: 5,
+                pageSize: 10,
             },
         },
     }
-    const dataWithId = rows.map((row, idx) => ({ id: idx + 1, ...row }));
+
     return (
-        <div style={{ width: '100%', height: 400 }}>
+        <div style={{ width: '100%', minHeight: 400 }}>
             <DataGrid
                 loading={loading}
-                rows={dataWithId}
+                rows={rows}
                 columns={columns}
                 initialState={defaultConfig}
                 pageSizeOptions={[5, 10, 20]}
                 showToolbar
                 slots={{ toolbar: () => <CustomToolbar title={title} onCreate={onCreate} createBtnLabel={createBtnLabel} /> }}
                 disableSelectionOnClick
+                autoHeight
             />
         </div>
     );
