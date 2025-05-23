@@ -11,11 +11,16 @@ const plans = [
 
 export default function SubscriptionPlansTable() {
     const [data, setData] = useState([]);
+    const userDetails = localStorage.getItem('userDetails');
+    const userId = userDetails ? JSON.parse(userDetails).id : null;
 
     const fetchData = async () => {
         try {
             const url = `${API_URL}/accounts/subscriptions/current/`;
-            const response = await axios.get(url, { withCredentials: true, });
+            const response = await axios.post(url, {
+                role: 'master_distributor',
+                id: userId
+            }, { withCredentials: true, });
             const data = response.data
             setData(data);
         } catch (error) {

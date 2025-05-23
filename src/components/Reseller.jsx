@@ -16,7 +16,7 @@ export function Reseller() {
 
     const fetchData = async () => {
         try {
-            const url = `${API_URL}/accounts/users/`;
+            const url = `${API_URL}/accounts/master-distributors/users/`;
             const response = await axios.get(url, { withCredentials: true, });
             const data = response.data?.map((item) => ({ ...item, name: item.first_name + ' ' + item.last_name }));
             setData(data);

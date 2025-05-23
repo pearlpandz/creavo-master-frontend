@@ -15,7 +15,7 @@ export function Distributor() {
 
     const fetchData = async () => {
         try {
-            const url = `${API_URL}/accounts/distributors/`;
+            const url = `${API_URL}/accounts/master-distributors/distributors/`;
             const response = await axios.get(url, { withCredentials: true, });
             const data = response.data?.map((item) => ({ ...item, name: item.first_name + ' ' + item.last_name }));
             setData(data);
