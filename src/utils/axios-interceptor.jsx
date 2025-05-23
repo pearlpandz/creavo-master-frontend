@@ -29,7 +29,7 @@ api.interceptors.response.use(
             if (error.response.status === 401 || error.response.status === 403) {
                 // Optionally clear auth and redirect to login
                 localStorage.clear();
-                window.location.href = '/login';
+                window.location.href = '/#/login';
             }
         }
         return Promise.reject(error);

@@ -121,8 +121,8 @@ export default function Home({ data }) {
                                 xAxis={[{ data: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Augest', 'September', 'October', 'November', 'December'] }]}
                                 series={[
                                     {
-                                        data: data?.monthly_stats?.unsold ?? [],
-                                        label: 'Purchased License',
+                                        data: data?.monthly_stats?.purchased ?? [],
+                                        label: 'Available License',
                                         // itemStyle: (params) => ({ fill: purchasedColors[params.dataIndex] })
                                     },
                                     {
