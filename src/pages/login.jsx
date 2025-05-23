@@ -3,8 +3,7 @@ import { Box, Grid, Typography, TextField, Button, IconButton, InputAdornment, D
 import { Visibility, VisibilityOff, Google, Facebook } from '@mui/icons-material'
 import MasonryImageList from '../components/ImageGallery'
 import { useNavigate } from 'react-router-dom'
-import { API_URL } from '../constants/settings'
-import axios from 'axios'
+import axios from '../utils/axios-interceptor'
 import { useAuth } from '../context/auth.context'
 
 const Login = () => {
@@ -23,13 +22,8 @@ const Login = () => {
         console.log('Password:', password)
 
         try {
-            const url = `${API_URL}/accounts/auth/master-distributor/`;
-            const res = await axios.post(url, { email, password }, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
+            const url = `/accounts/auth/master-distributor/`;
+            const res = await axios.post(url, { email, password })
             if (res.status === 200) {
                 login(res.data.user)
                 navigate('/')

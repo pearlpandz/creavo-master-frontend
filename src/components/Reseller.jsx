@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import DataTable from "./DataTable";
 import CreateModal from "./CreateDistributorModal";
-import { API_URL } from "../constants/settings";
 import { RESELLER_COLUMNS } from "../constants/columns";
-import axios from "axios";
+import axios from '../utils/axios-interceptor'
 import { Snackbar, Alert } from '@mui/material';
 
 export function Reseller() {
@@ -16,8 +15,8 @@ export function Reseller() {
 
     const fetchData = async () => {
         try {
-            const url = `${API_URL}/accounts/master-distributors/users/`;
-            const response = await axios.get(url, { withCredentials: true, });
+            const url = `/accounts/master-distributors/users/`;
+            const response = await axios.get(url);
             const data = response.data?.map((item) => ({ ...item, name: item.first_name + ' ' + item.last_name }));
             setData(data);
         } catch (error) {
@@ -39,7 +38,7 @@ export function Reseller() {
 
     const onSubmit = async (data) => {
         try {
-            const url = `${API_URL}/accounts/users/`;
+            const url = `/accounts/users/`;
             const payload = {
                 first_name: data.firstName,
                 last_name: data.lastName,
@@ -48,7 +47,7 @@ export function Reseller() {
                 password: data.password,
                 created_by_master_distributor: userId, // created_by_distributor
             }
-            const response = await axios.post(url, payload, { withCredentials: true, });
+            const response = await axios.post(url, payload);
             if (response.status === 201) {
                 fetchData();
                 setOpen(false);

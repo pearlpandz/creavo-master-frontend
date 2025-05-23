@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Box, Typography, Checkbox, FormControlLabel, IconButton, Button, Divider, TextField, Grid, Card } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import axios from 'axios';
+import axios from '../utils/axios-interceptor'
 import { Snackbar, Alert } from '@mui/material';
-import { API_URL } from '../constants/settings';
 
 export default function SubscriptionCheckout() {
     const [selected, setSelected] = useState({});
@@ -15,8 +14,8 @@ export default function SubscriptionCheckout() {
 
     const fetchData = async () => {
         try {
-            const url = `${API_URL}/accounts/subscriptions/`;
-            const response = await axios.get(url, { withCredentials: true, });
+            const url = `/accounts/subscriptions/`;
+            const response = await axios.get(url);
             const data = response.data
             setData(data);
         } catch (error) {
@@ -65,8 +64,8 @@ export default function SubscriptionCheckout() {
                 subtotal: total,
                 total: total,
             }
-            const url = `${API_URL}/accounts/orders/new/`;
-            const response = await axios.post(url, payload, { withCredentials: true, });
+            const url = `/accounts/orders/new/`;
+            const response = await axios.post(url, payload);
             if (response.status === 200) {
                 setSelected({});
                 fetchData();

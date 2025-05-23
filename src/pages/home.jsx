@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../utils/axios-interceptor'
 import DashboardContent from '../components/DashboardContent'
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/auth.context';
@@ -11,9 +11,7 @@ function Home() {
 
     const getData = async () => {
         try {
-            const res = await axios.get('http://localhost:8000/accounts/master-distributors/dashboard/', {
-                withCredentials: true,
-            })
+            const res = await axios.get('/accounts/master-distributors/dashboard/')
             if (res.status === 200) {
                 setData(res.data)
             } else {
@@ -32,7 +30,7 @@ function Home() {
     useEffect(() => {
         const getProfile = async () => {
             try {
-                const res = await axios.get('http://localhost:8000/accounts/users/profile/', { withCredentials: true })
+                const res = await axios.get('/accounts/users/profile/')
                 if (res.status === 200) {
                     login(res.data)
                     navigate('/')

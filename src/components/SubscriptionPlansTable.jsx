@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { API_URL } from '../constants/settings';
-import axios from 'axios';
+import axios from '../utils/axios-interceptor'
 import moment from 'moment/moment';
 
 const plans = [
@@ -16,11 +15,11 @@ export default function SubscriptionPlansTable() {
 
     const fetchData = async () => {
         try {
-            const url = `${API_URL}/accounts/subscriptions/current/`;
+            const url = `/accounts/subscriptions/current/`;
             const response = await axios.post(url, {
                 role: 'master_distributor',
                 id: userId
-            }, { withCredentials: true, });
+            });
             const data = response.data
             setData(data);
         } catch (error) {
