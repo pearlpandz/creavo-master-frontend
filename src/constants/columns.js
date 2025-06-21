@@ -1,6 +1,4 @@
 import moment from "moment/moment";
-import { StatusFormatter } from "../utils/component";
-import { styled } from "@mui/material";
 
 export const DISTRIBUTOR_COLUMNS = [
   {
