@@ -1,1 +1,1 @@
-export const API_URL = "https://admin.creavo.in";
+export const API_URL = import.meta.env.VITE_DJANGO_URL;
