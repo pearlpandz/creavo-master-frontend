@@ -38,9 +38,9 @@ jobs:
         id: vars
         run: |
           if [[ "${GITHUB_REF##*/}" == "master" ]]; then
-            echo "TARGET_PATH=/var/www/creavo-distributor" >> $GITHUB_ENV
+            echo "TARGET_PATH=/var/www/creavo-master" >> $GITHUB_ENV
           else
-            echo "TARGET_PATH=/var/www/dev-creavo-distributor" >> $GITHUB_ENV
+            echo "TARGET_PATH=/var/www/dev-creavo-master" >> $GITHUB_ENV
           fi
 
       - name: Copy Build Files to Server
